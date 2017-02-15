@@ -101,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoDeploy.cs" />
-    <Compile Include="AutoDeployAssemblyInfo.cs" />
+    <Compile Include="Properties\AutoDeployAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

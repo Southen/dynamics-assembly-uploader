@@ -1,18 +1,19 @@
-﻿using System;
+﻿/*
+ * AutoDeploy
+ * Copyright (c) 2016 Sebastian Southen & Samuel Warnock
+ *
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
-using System.Text;
-using System.Threading.Tasks;
 using System.Activities;
 using System.Net;
 using System.Runtime.Serialization;
