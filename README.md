@@ -1,7 +1,6 @@
 # PluginUpdateTool
 
-Microsoft Dynamics CRM Plugin Assembly Update Tool
-
+Microsoft Dynamics CRM Plugin Assembly Update Tool.
 
 ## Usage
 
@@ -11,25 +10,25 @@ Microsoft Dynamics CRM Plugin Assembly Update Tool
 	> PluginUpdateTool.exe /d org.Example
 	> PluginUpdateTool.exe /u org.Example.dll
 
-Can be used as a post build step like:
-	> PluginUpdateTool.exe /u $(TargetName)
+Can be used as a post-build event like:
 
+	> PluginUpdateTool.exe /u $(TargetName)
 
 
 # AutoDeploy
 
-Automagical directory watching Microsoft DYnamics CRM Plugin Assembly Deployer
+Automagical directory watching Microsoft DYnamics CRM Plugin Assembly Deployer.
 
 ## Usage
-    > git clone https://github.com/Southen/dynamics-assembly-uploader
+
+	> git clone https://github.com/Southen/dynamics-assembly-uploader
 	> msbuild /property:Configuration=Release AutoDeploy.csproj
 	> AutoDeploy.exe
 
 
+# License
 
-## License
-
-Copyright (c) 2016, Sebastian Southen & Samuel Warnock
+Copyright (c) 2016, Sebastian Southen & Samuel Warnock  
 All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
