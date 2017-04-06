@@ -1,6 +1,6 @@
 ﻿/*
  * AutoDeploy
- * Copyright (c) 2016 Sebastian Southen & Samuel Warnock
+ * Copyright (c) 2016-2017 Sebastian Southen & Samuel Warnock
  *
  */
 
@@ -14,6 +14,7 @@ using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Tooling.Connector;
 using System.Activities;
 using System.Net;
 using System.Runtime.Serialization;
@@ -21,11 +22,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using System.IO;
-using Microsoft.Xrm.Sdk.Client;
 using System.Threading;
 using System.Reflection;
-using Microsoft.Xrm.Client;
-using Microsoft.Xrm.Client.Services;
 
 namespace AutoDeploy
 {
@@ -225,8 +223,10 @@ namespace AutoDeploy
 			//string connectionString = ConfigurationManager.ConnectionStrings["CRMSource"].ConnectionString;
 			//CrmServiceClient conn = new Microsoft.Xrm.Tooling.Connector.CrmServiceClient(connectionString);
 			//var orgService = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
-			CrmConnection crmConnection = CrmConnection.Parse(ConfigurationManager.ConnectionStrings["CRM"].ConnectionString);
-			OrganizationService orgService = new OrganizationService(crmConnection);
+			//CrmConnection crmConnection = CrmConnection.Parse(ConfigurationManager.ConnectionStrings["CRM"].ConnectionString);
+			//OrganizationService orgService = new OrganizationService(crmConnection);
+			CrmServiceClient orgService = new CrmServiceClient(ConfigurationManager.ConnectionStrings["CRM"].ConnectionString);
+
 			string name = "Recurring Workflow";
 
 			var qqw = orgService.RetrieveMultiple(new QueryExpression("pluginassembly")

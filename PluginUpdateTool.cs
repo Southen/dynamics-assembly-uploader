@@ -1,13 +1,12 @@
 ﻿/*
  * PluginUpdateTool
- * Copyright (c) 2016 Sebastian Southen & Samuel Warnock
+ * Copyright (c) 2016-2017 Sebastian Southen & Samuel Warnock
  *
  */
 
-using Microsoft.Xrm.Client;
-using Microsoft.Xrm.Client.Services;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Tooling.Connector;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,8 +59,10 @@ namespace PluginUpdateTool {
 				}
 			}
 
-			CrmConnection crmConnection = CrmConnection.Parse(Settings.Default.CRM);
-			OrganizationService orgService = new OrganizationService(crmConnection);
+			//CrmConnection crmConnection = CrmConnection.Parse(Settings.Default.CRM);
+			//OrganizationService orgService = new OrganizationService(crmConnection);
+			CrmServiceClient orgService = new CrmServiceClient(Settings.Default.CRM);
+
 			var query = new QueryExpression("pluginassembly") {
 				//ColumnSet = new ColumnSet(true),
 				ColumnSet = new ColumnSet("name", "version"),
@@ -80,37 +81,42 @@ namespace PluginUpdateTool {
 					query.Criteria.Conditions.Add(new ConditionExpression("name", ConditionOperator.Equal, plugin));
 				}
 			}
-			List<Entity> results = orgService.RetrieveMultiple(query).Entities.ToList();
+			try {
+				List<Entity> results = orgService.RetrieveMultiple(query).Entities.ToList();
 
-			if (mode.HasFlag(Mode.List)) {
-				foreach (var result in results.OrderBy(a => a["name"])) {
-					Console.WriteLine("{0} v{1}", result["name"], result["version"]);	// Microsoft.Dynamics.FieldService 1.0.0.0
-				}
-				Console.WriteLine();
-			}
-
-			if (mode.HasFlag(Mode.Download)) {
-				foreach (var result in results.OrderBy(a => a["name"])) {
-					Console.WriteLine("Saving {0} v{1}....", result["name"], result["version"]);
-					File.WriteAllBytes(
-						result.GetAttributeValue<string>("name") + "." + result.GetAttributeValue<string>("version") + ".dll",
-						System.Convert.FromBase64String(result.GetAttributeValue<string>("content"))
-					);
-				}
-				Console.WriteLine();
-			}
-
-			if (plugins.Count > 0) {
-				if (mode.HasFlag(Mode.Upload)) {
+				if (mode.HasFlag(Mode.List)) {
 					foreach (var result in results.OrderBy(a => a["name"])) {
-						if (plugins.Contains(result.GetAttributeValue<string>("name"))) {
-							Console.WriteLine("Replacing {0} v{1}....", result["name"], result["version"]);
-							result["content"] = System.Convert.ToBase64String(File.ReadAllBytes(result.GetAttributeValue<string>("name") + ".dll"));
-							orgService.Update(result);
-						}
+						Console.WriteLine("{0} v{1}", result["name"], result["version"]);   // Microsoft.Dynamics.FieldService 1.0.0.0
 					}
 					Console.WriteLine();
 				}
+
+				if (mode.HasFlag(Mode.Download)) {
+					foreach (var result in results.OrderBy(a => a["name"])) {
+						Console.WriteLine("Saving {0} v{1}....", result["name"], result["version"]);
+						File.WriteAllBytes(
+							result.GetAttributeValue<string>("name") + "." + result.GetAttributeValue<string>("version") + ".dll",
+							System.Convert.FromBase64String(result.GetAttributeValue<string>("content"))
+						);
+					}
+					Console.WriteLine();
+				}
+
+				if (plugins.Count > 0) {
+					if (mode.HasFlag(Mode.Upload)) {
+						foreach (var result in results.OrderBy(a => a["name"])) {
+							if (plugins.Contains(result.GetAttributeValue<string>("name"))) {
+								Console.WriteLine("Replacing {0} v{1}....", result["name"], result["version"]);
+								result["content"] = System.Convert.ToBase64String(File.ReadAllBytes(result.GetAttributeValue<string>("name") + ".dll"));
+								orgService.Update(result);
+							}
+						}
+						Console.WriteLine();
+					}
+				}
+			}
+			catch (Exception e) {
+				Console.WriteLine(e.Message);
 			}
 
 #if DEBUG
